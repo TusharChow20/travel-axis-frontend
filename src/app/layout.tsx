@@ -1,6 +1,6 @@
-"use client";
 import { store } from "@/redux/store";
 import { Provider } from "react-redux";
+import { AuthProvider } from "@/components/shared/AuthProvider";
 
 export default function RootLayout({
   children,
@@ -10,7 +10,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Provider store={store}>{children}</Provider>
+        <Provider store={store}>
+          <AuthProvider>{children}</AuthProvider>
+        </Provider>
       </body>
     </html>
   );
