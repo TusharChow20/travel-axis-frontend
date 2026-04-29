@@ -32,27 +32,29 @@ const socialLinks = [
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-900 dark:bg-gray-950 text-gray-300">
+    <footer>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-block mb-4">
-              <img
-                src="https://logoipsum.com/a/logo-1.svg"
-                alt="TravelAxis"
-                width={140}
-                height={40}
-                className="invert"
-              />
-            </Link>
-            <p className="text-sm text-gray-400 mb-6 max-w-xs">
-              Discover the beauty of Bangladesh with TravelAxis. Your trusted
-              partner for unforgettable travel experiences.
-            </p>
+            <div className="flex gap-5">
+              <Link href="/" className="inline-block mb-4">
+                <img
+                  src="/logo.svg"
+                  alt="TravelAxis"
+                  width={40}
+                  height={40}
+                  className="dark:invert"
+                />
+              </Link>
+              <p className="text-sm  mb-6 max-w-xs">
+                Discover the beauty of Bangladesh with TravelAxis. Your trusted
+                partner for unforgettable travel experiences.
+              </p>
+            </div>
 
             {/* Contact Info */}
-            <div className="flex flex-col gap-3 text-sm text-gray-400">
+            <div className="flex flex-col  gap-3 text-sm ">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-blue-400 shrink-0" />
                 <span>support@travelaxis.com</span>
@@ -76,7 +78,7 @@ export const Footer = () => {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
+                    className="text-sm  hover:text-green-400 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -93,7 +95,7 @@ export const Footer = () => {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
+                    className="text-sm  hover:text-blue-400 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -110,7 +112,7 @@ export const Footer = () => {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
+                    className="text-sm  hover:text-blue-400 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -133,7 +135,7 @@ export const Footer = () => {
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className=" hover:text-green-400 transition-colors"
               >
                 <social.icon className="h-5 w-5" />
               </Link>

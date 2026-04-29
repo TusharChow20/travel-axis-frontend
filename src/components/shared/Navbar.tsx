@@ -25,7 +25,7 @@ import {
   selectIsAuthenticated,
 } from "@/redux/features/auth/authSlice";
 import { useRouter } from "next/navigation";
-import { useTheme } from "@/hooks/useTheme"; 
+import { useTheme } from "@/hooks/useTheme";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -38,7 +38,7 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { theme, toggleTheme } = useTheme(); // ✅ custom hook
+  const { theme, toggleTheme } = useTheme(); //custom hook
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -77,9 +77,9 @@ export const Navbar = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <img
-              src="https://logoipsum.com/a/logo-1.svg"
+              src="/logo.svg"
               alt="TravelAxis"
-              width={140}
+              width={40}
               height={40}
               className="dark:invert"
             />
