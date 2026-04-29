@@ -124,7 +124,7 @@ export const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-foreground">
             © {new Date().getFullYear()} TravelAxis BD. All rights reserved.
           </p>
 
