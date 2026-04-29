@@ -67,7 +67,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <Card className="shadow-lg">
           <CardHeader className="text-center">
@@ -77,17 +77,17 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Error Message */}
+            {/* Error */}
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm p-3 rounded-md">
+              <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
                 {error}
               </div>
             )}
 
-            {/* Google Login */}
+            {/* Google */}
             <Button
               variant="outline"
-              className="w-full flex items-center gap-2"
+              className="w-full flex items-center gap-2 cursor-pointer"
               onClick={handleGoogleLogin}
             >
               <FaGoogle className="h-4 w-4 text-red-500" />
@@ -97,10 +97,10 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white dark:bg-gray-900 px-2 text-gray-500">
+                <span className="bg-card px-2 text-muted-foreground">
                   or continue with email
                 </span>
               </div>
@@ -117,7 +117,9 @@ export default function LoginPage() {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-xs">{errors.email.message}</p>
+                  <p className="text-destructive text-xs">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -126,7 +128,7 @@ export default function LoginPage() {
                   <Label htmlFor="password">Password</Label>
                   <Link
                     href="/forget-password"
-                    className="text-xs text-green-600 hover:underline"
+                    className="text-xs text-primary hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -141,7 +143,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -151,7 +153,7 @@ export default function LoginPage() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-destructive text-xs">
                     {errors.password.message}
                   </p>
                 )}
@@ -159,13 +161,13 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                className="w-full cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" /> Signing
-                    in...
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Signing in...
                   </>
                 ) : (
                   "Sign In"
@@ -173,11 +175,11 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Link
                 href="/register"
-                className="text-green-600 hover:underline font-medium"
+                className="text-primary hover:underline font-medium"
               >
                 Register
               </Link>

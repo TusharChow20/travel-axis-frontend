@@ -155,7 +155,7 @@ export const Navbar = () => {
                 </Button>
                 <Button
                   asChild
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   <Link href="/register">Register</Link>
                 </Button>
