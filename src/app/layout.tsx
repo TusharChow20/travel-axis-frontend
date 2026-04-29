@@ -1,11 +1,12 @@
-import { store } from "@/redux/store";
-import { Provider } from "react-redux";
-import { AuthProvider } from "@/components/shared/AuthProvider";
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+import "./globals.css";
+import { Providers } from "@/components/shared/Providers";
+import { Navbar } from "@/components/shared/Navbar";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
+export const metadata: Metadata = {
+  title: "TravelAxis BD",
+  description: "Discover the beauty of Bangladesh",
+};
 
 export default function RootLayout({
   children,
@@ -13,11 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Provider store={store}>
-          <AuthProvider>{children}</AuthProvider>
-        </Provider>
+        <Providers>
+          <Navbar></Navbar>
+          {children}
+        </Providers>
       </body>
     </html>
   );

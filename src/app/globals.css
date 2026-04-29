@@ -116,8 +116,22 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
 @layer base {
+  :root {
+    --primary: 142 76% 36%; /* green */
+    --primary-foreground: 0 0% 100%;
+    --ring: 142 76% 36%;
+  }
+  .dark {
+    --primary: 142 76% 45%; /* lighter green for dark mode */
+    --primary-foreground: 0 0% 100%;
+    --ring: 142 76% 45%;
+  }
   * {
     @apply border-border outline-ring/50;
   }
