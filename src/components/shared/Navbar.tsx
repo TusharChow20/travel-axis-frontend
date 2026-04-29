@@ -37,14 +37,14 @@ const navLinks = [
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { theme, toggleTheme } = useTheme(); //custom hook
+  const [themeMounted, setThemeMounted] = useState(false); //  only for theme
+  const { theme, toggleTheme } = useTheme();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const router = useRouter();
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => setThemeMounted(true), []); //  only for theme toggle
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -58,9 +58,7 @@ export const Navbar = () => {
   };
 
   const getDashboardLink = () => {
-    if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") {
-      return "/admin";
-    }
+    if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") return "/admin";
     return "/user/profile";
   };
 
@@ -68,8 +66,8 @@ export const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/90 dark:bg-gray-900/95 backdrop-blur-md shadow-md"
-          : "bg-white dark:bg-transparent"
+          ? "bg-background/90 backdrop-blur-md shadow-md"
+          : "bg-background"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,7 +89,7 @@ export const Navbar = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 transition-colors"
+                className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
               >
                 {link.label}
               </Link>
@@ -100,8 +98,8 @@ export const Navbar = () => {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Theme Toggle */}
-            {mounted && (
+            {/* Theme Toggle — only after mounted */}
+            {themeMounted && (
               <Button variant="ghost" size="icon" onClick={toggleTheme}>
                 {theme === "dark" ? (
                   <Sun className="h-5 w-5" />
@@ -111,7 +109,7 @@ export const Navbar = () => {
               </Button>
             )}
 
-            {/* Auth Buttons */}
+            {/*  Auth — no mounted check needed since AuthProvider handles it */}
             {isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -123,7 +121,11 @@ export const Navbar = () => {
                         className="w-6 h-6 rounded-full object-cover"
                       />
                     ) : (
-                      <User className="h-4 w-4" />
+                      <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                        <span className="text-primary-foreground text-xs font-bold">
+                          {user.name?.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
                     )}
                     <span className="max-w-[100px] truncate">{user.name}</span>
                   </Button>
@@ -141,7 +143,7 @@ export const Navbar = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleLogout}
-                    className="flex items-center gap-2 text-red-500 focus:text-red-500"
+                    className="flex items-center gap-2 text-destructive focus:text-destructive"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout
@@ -153,10 +155,7 @@ export const Navbar = () => {
                 <Button variant="ghost" asChild>
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button
-                  asChild
-                  className="bg-primary text-gray-100 hover:bg-primary/95"
-                >
+                <Button asChild>
                   <Link href="/register">Register</Link>
                 </Button>
               </div>
@@ -165,7 +164,7 @@ export const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-2">
-            {mounted && (
+            {themeMounted && (
               <Button variant="ghost" size="icon" onClick={toggleTheme}>
                 {theme === "dark" ? (
                   <Sun className="h-5 w-5" />
@@ -190,20 +189,20 @@ export const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t dark:border-gray-700">
+          <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 transition-colors"
+                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
 
-              <div className="flex flex-col gap-2 pt-2 border-t dark:border-gray-700">
+              <div className="flex flex-col gap-2 pt-2 border-t border-border">
                 {isAuthenticated && user ? (
                   <>
                     <Link
@@ -216,7 +215,7 @@ export const Navbar = () => {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 text-sm font-medium text-red-500"
+                      className="flex items-center gap-2 text-sm font-medium text-destructive"
                     >
                       <LogOut className="h-4 w-4" />
                       Logout
@@ -229,10 +228,7 @@ export const Navbar = () => {
                         Login
                       </Link>
                     </Button>
-                    <Button
-                      asChild
-                      className="bg-green-600 hover:bg-green-700 text-white"
-                    >
+                    <Button asChild>
                       <Link href="/register" onClick={() => setIsOpen(false)}>
                         Register
                       </Link>

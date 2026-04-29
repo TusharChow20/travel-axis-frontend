@@ -25,19 +25,36 @@ interface IAuthState {
   isAuthenticated: boolean;
 }
 
-const initialState: IAuthState = {
-  user: null,
-  accessToken: null,
-  refreshToken: null,
-  isLoading: false,
-  isAuthenticated: false,
+// ✅ Load from localStorage immediately when store initializes
+const getInitialState = (): IAuthState => {
+  if (typeof window !== "undefined") {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const userStr = localStorage.getItem("user");
+
+    if (accessToken && userStr) {
+      return {
+        user: JSON.parse(userStr),
+        accessToken,
+        refreshToken,
+        isLoading: false,
+        isAuthenticated: true,
+      };
+    }
+  }
+  return {
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    isLoading: false,
+    isAuthenticated: false,
+  };
 };
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: getInitialState(), // ✅ not hardcoded initialState
   reducers: {
-    // Set credentials after login
     setCredentials: (
       state,
       action: PayloadAction<{
@@ -50,20 +67,16 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
-
-      // Persist to localStorage
       localStorage.setItem("accessToken", action.payload.accessToken);
       localStorage.setItem("refreshToken", action.payload.refreshToken);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
 
-    // Load from localStorage on app start
     loadCredentials: (state) => {
       if (typeof window !== "undefined") {
         const accessToken = localStorage.getItem("accessToken");
         const refreshToken = localStorage.getItem("refreshToken");
         const user = localStorage.getItem("user");
-
         if (accessToken && user) {
           state.accessToken = accessToken;
           state.refreshToken = refreshToken;
@@ -73,7 +86,6 @@ const authSlice = createSlice({
       }
     },
 
-    // Update user profile
     updateUser: (state, action: PayloadAction<Partial<IUser>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
@@ -81,19 +93,16 @@ const authSlice = createSlice({
       }
     },
 
-    // Update access token (refresh token flow)
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
       localStorage.setItem("accessToken", action.payload);
     },
 
-    // Logout
     logout: (state) => {
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
-
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
@@ -116,7 +125,6 @@ export const {
 
 type AuthRootState = RootState & { auth: IAuthState };
 
-// Selectors
 export const selectUser = (state: AuthRootState) => state.auth.user;
 export const selectAccessToken = (state: AuthRootState) =>
   state.auth.accessToken;
