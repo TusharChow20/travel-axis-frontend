@@ -53,17 +53,23 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
     try {
+      //Register
       await axiosInstance.post("/user/register", {
         name: data.name,
         email: data.email,
         password: data.password,
       });
-      toast.success("Account created successfully!", {
-        description: "Please sign in to continue.",
+
+      //Auto send OTP
+      await axiosInstance.post("/otp/send-otp", {
+        email: data.email,
       });
-      router.push("/login?registered=true");
+
+      toast.success("OTP sent to your email!");
+
+      // Redirect to verify page with email
+      router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
     } catch (err: any) {
-      // Handle Zod validation errors from backend
       if (err.response?.data?.errors) {
         const errors = err.response.data.errors;
         const errorMessages = errors

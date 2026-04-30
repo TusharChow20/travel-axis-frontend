@@ -31,13 +31,16 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [error, setError] = useState("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState(""); 
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -46,6 +49,8 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     setError("");
+    setUnverifiedEmail(""); // ✅ always clear first
+
     try {
       const res = await axiosInstance.post("/auth/login", data);
       dispatch(setCredentials(res.data.data));
@@ -56,9 +61,34 @@ export default function LoginPage() {
         router.push("/");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
+      const message = err.response?.data?.message || "Login failed";
+      console.log("Login error message:", message); // 🔍 debug
+
+      if (message === "EMAIL_NOT_VERIFIED") {
+        // ✅ Only for unverified email
+        setUnverifiedEmail(data.email);
+        setError("Your email is not verified. Please verify to continue.");
+      } else {
+        // ✅ All other errors — wrong password, user not found, etc.
+        setUnverifiedEmail("");
+        setError(message);
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // ✅ Resend OTP and redirect to verify page
+  const handleSendVerification = async () => {
+    setIsSendingOtp(true);
+    const email = unverifiedEmail || getValues("email");
+    try {
+      await axiosInstance.post("/otp/send-otp", { email });
+      router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
@@ -80,7 +110,26 @@ export default function LoginPage() {
             {/* Error */}
             {error && (
               <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
-                {error}
+                <p>{error}</p>
+                {/* ✅ Show verify button if email not verified */}
+                {unverifiedEmail && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    onClick={handleSendVerification}
+                    disabled={isSendingOtp}
+                  >
+                    {isSendingOtp ? (
+                      <>
+                        <Loader2 className="h-3 w-3 animate-spin mr-2" />
+                        Sending OTP...
+                      </>
+                    ) : (
+                      "Send Verification Code"
+                    )}
+                  </Button>
+                )}
               </div>
             )}
 
