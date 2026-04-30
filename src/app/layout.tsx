@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "@/components/shared/Providers";
 import { Navbar } from "@/components/shared/Navbar";
 import { Footer } from "@/components/shared/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "TravelAxis BD",
@@ -20,6 +21,8 @@ export default function RootLayout({
         <Providers>
           <Navbar></Navbar>
           {children}
+
+          <Toaster richColors position="top-right" />
           <Footer></Footer>
         </Providers>
       </body>

@@ -25,7 +25,7 @@ interface IAuthState {
   isAuthenticated: boolean;
 }
 
-// ✅ Load from localStorage immediately when store initializes
+// Load from localStorage immediately when store initializes
 const getInitialState = (): IAuthState => {
   if (typeof window !== "undefined") {
     const accessToken = localStorage.getItem("accessToken");
@@ -53,7 +53,7 @@ const getInitialState = (): IAuthState => {
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: getInitialState(), // ✅ not hardcoded initialState
+  initialState: getInitialState(), // not hardcoded initialState
   reducers: {
     setCredentials: (
       state,

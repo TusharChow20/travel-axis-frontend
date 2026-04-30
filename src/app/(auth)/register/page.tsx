@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
+import { toast } from "sonner";
 
 const registerSchema = z
   .object({
@@ -57,9 +58,24 @@ export default function RegisterPage() {
         email: data.email,
         password: data.password,
       });
+      toast.success("Account created successfully!", {
+        description: "Please sign in to continue.",
+      });
       router.push("/login?registered=true");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+      // Handle Zod validation errors from backend
+      if (err.response?.data?.errors) {
+        const errors = err.response.data.errors;
+        const errorMessages = errors
+          .map(
+            (e: { field: string; message: string }) =>
+              `${e.field}: ${e.message}`,
+          )
+          .join(", ");
+        setError(errorMessages);
+      } else {
+        setError(err.response?.data?.message || "Registration failed");
+      }
     } finally {
       setIsLoading(false);
     }
