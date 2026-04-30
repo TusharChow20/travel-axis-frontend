@@ -45,7 +45,17 @@ export default function ProfilePage() {
     setError("");
     setSuccess("");
     try {
-      const res = await axiosInstance.patch(`/user/${user?._id}`, data);
+      const userId = user?._id?.toString();
+
+      // ✅ Remove empty string fields before sending
+      const cleanData = Object.fromEntries(
+        Object.entries(data).filter(
+          ([_, v]) => v !== "" && v !== null && v !== undefined,
+        ),
+      );
+
+      console.log("sending:", cleanData);
+      const res = await axiosInstance.patch(`/user/${userId}`, cleanData);
       dispatch(updateUser(res.data.data));
       setSuccess("Profile updated successfully!");
     } catch (err: any) {

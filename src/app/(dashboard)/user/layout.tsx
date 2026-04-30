@@ -6,8 +6,8 @@ import {
 } from "@/redux/features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { UserSidebar } from "@/components/modules/dashboard/user/UserSidebar";
 import { Loader2 } from "lucide-react";
+import { UserSidebar } from "@/components/modules/dashboard/user/UserSidebar";
 
 export default function UserDashboardLayout({
   children,
@@ -33,8 +33,8 @@ export default function UserDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen  bg-muted/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-18">
         <div className="flex gap-6">
           {/* Sidebar */}
           <UserSidebar user={user!} />
