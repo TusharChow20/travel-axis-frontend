@@ -5,7 +5,7 @@ import {
   selectUser,
   selectIsAuthenticated,
 } from "@/redux/features/auth/authSlice";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AdminSidebar } from "@/components/modules/dashboard/admin/AdminSidebar";
 import { Loader2, Menu, X } from "lucide-react";
@@ -19,6 +19,7 @@ export default function AdminLayout({
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const router = useRouter();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -28,7 +29,9 @@ export default function AdminLayout({
       router.push("/");
     }
   }, [isAuthenticated, user, router]);
-
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
   if (
     !isAuthenticated ||
     (user?.role !== "ADMIN" && user?.role !== "SUPER_ADMIN")
@@ -43,8 +46,6 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-muted/30 pt-16">
       {" "}
-      {/* ✅ pt-16 for navbar */}
-      {/* Mobile top bar */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-card border-b border-border">
         <span className="font-semibold text-foreground">Admin Dashboard</span>
         <Button

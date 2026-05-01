@@ -12,7 +12,6 @@ import {
   LogOut,
   ChevronRight,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -22,7 +21,13 @@ const navItems = [
   { label: "Change Password", href: "/user/change-password", icon: KeyRound },
 ];
 
-export const UserSidebar = ({ user }: { user: IUser }) => {
+export const UserSidebar = ({
+  user,
+  onNavClick, // ✅ added
+}: {
+  user: IUser;
+  onNavClick?: () => void;
+}) => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -30,10 +35,11 @@ export const UserSidebar = ({ user }: { user: IUser }) => {
   const handleLogout = () => {
     dispatch(logout());
     router.push("/login");
+    onNavClick?.(); // ✅ close mobile sidebar
   };
 
   return (
-    <aside className="w-64 shrink-0">
+    <aside className="w-full">
       {/* Profile Card */}
       <div className="bg-card border border-border rounded-2xl p-6 mb-4 text-center">
         {user.picture ? (
@@ -64,6 +70,7 @@ export const UserSidebar = ({ user }: { user: IUser }) => {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavClick} // ✅ close mobile sidebar on click
               className={cn(
                 "flex items-center justify-between px-4 py-3 transition-colors",
                 index !== navItems.length - 1 && "border-b border-border",
