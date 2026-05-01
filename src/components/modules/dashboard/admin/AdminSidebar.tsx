@@ -25,7 +25,13 @@ const navItems = [
   { label: "View Site", href: "/", icon: Globe },
 ];
 
-export const AdminSidebar = ({ user }: { user: IUser }) => {
+export const AdminSidebar = ({
+  user,
+  onNavClick,
+}: {
+  user: IUser;
+  onNavClick?: () => void;
+}) => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -33,10 +39,11 @@ export const AdminSidebar = ({ user }: { user: IUser }) => {
   const handleLogout = () => {
     dispatch(logout());
     router.push("/login");
+    onNavClick?.();
   };
 
   return (
-    <aside className="w-64 shrink-0">
+    <aside className="w-full">
       {/* Profile Card */}
       <div className="bg-card border border-border rounded-2xl p-6 mb-4 text-center">
         {user.picture ? (
@@ -70,6 +77,7 @@ export const AdminSidebar = ({ user }: { user: IUser }) => {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavClick} // ✅ close mobile sidebar on nav
               className={cn(
                 "flex items-center justify-between px-4 py-3 transition-colors",
                 index !== navItems.length - 1 && "border-b border-border",
