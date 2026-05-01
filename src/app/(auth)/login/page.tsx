@@ -50,9 +50,9 @@ export default function LoginPage() {
     setIsLoading(true);
     setError("");
     setUnverifiedEmail("");
-
     try {
       const res = await axiosInstance.post("/auth/login", data);
+
       dispatch(setCredentials({ user: res.data.data.user }));
       const role = res.data.data.user.role;
       if (role === "ADMIN" || role === "SUPER_ADMIN") {
@@ -74,7 +74,6 @@ export default function LoginPage() {
     }
   };
 
-  // ✅ Resend OTP and redirect to verify page
   const handleSendVerification = async () => {
     setIsSendingOtp(true);
     const email = unverifiedEmail || getValues("email");
