@@ -26,6 +26,7 @@ import {
 } from "@/redux/features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/hooks/useTheme";
+import axiosInstance from "@/lib/axios";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -52,9 +53,15 @@ export const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+    } catch (err) {
+      console.log("Error in logout ");
+    } finally {
+      dispatch(logout());
+      router.push("/login");
+    }
   };
 
   const getDashboardLink = () => {

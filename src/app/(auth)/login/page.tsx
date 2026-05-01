@@ -33,7 +33,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [error, setError] = useState("");
-  const [unverifiedEmail, setUnverifiedEmail] = useState(""); 
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -49,11 +49,11 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     setError("");
-    setUnverifiedEmail(""); // ✅ always clear first
+    setUnverifiedEmail("");
 
     try {
       const res = await axiosInstance.post("/auth/login", data);
-      dispatch(setCredentials(res.data.data));
+      dispatch(setCredentials({ user: res.data.data.user }));
       const role = res.data.data.user.role;
       if (role === "ADMIN" || role === "SUPER_ADMIN") {
         router.push("/admin");
@@ -62,14 +62,10 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       const message = err.response?.data?.message || "Login failed";
-      console.log("Login error message:", message); // 🔍 debug
-
       if (message === "EMAIL_NOT_VERIFIED") {
-        // ✅ Only for unverified email
         setUnverifiedEmail(data.email);
         setError("Your email is not verified. Please verify to continue.");
       } else {
-        // ✅ All other errors — wrong password, user not found, etc.
         setUnverifiedEmail("");
         setError(message);
       }
