@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import { TourFilter } from "@/components/modules/tours/TourFilter";
 import { TourCard } from "@/components/modules/tours/TourCard";
+import { SearchWithSuggestions } from "@/components/modules/tours/SearchWithSuggestions";
 
 interface ITour {
   _id: string;
@@ -76,7 +77,7 @@ export default function ToursPage() {
 
       const res = await axiosInstance.get(`/tour?${params.toString()}`);
 
-      console.log("API Response:", res.data); // 🔍 debug
+      console.log("API Response:", res.data); //
 
       const responseData = res.data.data;
       setTours(responseData.data || []);
@@ -128,21 +129,18 @@ export default function ToursPage() {
           </p>
         </div>
 
-        {/* Search bar */}
         <div className="flex gap-3 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search tours..."
-              className="pl-9"
-              value={filters.search}
-              onChange={(e) => handleFilterChange({ search: e.target.value })}
-            />
-          </div>
+          <SearchWithSuggestions
+            value={filters.search}
+            onChange={(value) => handleFilterChange({ search: value })}
+            onSearch={(value) => {
+              handleFilterChange({ search: value });
+            }}
+          />
           {/* Mobile filter button */}
           <Button
             variant="outline"
-            className="lg:hidden flex items-center gap-2"
+            className="lg:hidden flex items-center gap-2 shrink-0"
             onClick={() => setShowMobileFilter(true)}
           >
             <SlidersHorizontal className="h-4 w-4" />
