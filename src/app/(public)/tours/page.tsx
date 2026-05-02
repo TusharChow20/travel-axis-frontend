@@ -47,7 +47,7 @@ export default function ToursPage() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [totalTours, setTotalTours] = useState(0);
   const [page, setPage] = useState(1);
-  const limit = 9;
+  const limit = 6;
 
   // ✅ Fetch divisions for filter
   useEffect(() => {
@@ -60,7 +60,6 @@ export default function ToursPage() {
     fetchDivisions();
   }, []);
 
-  // ✅ Fetch tours with filters
   const fetchTours = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -76,9 +75,20 @@ export default function ToursPage() {
       params.append("limit", limit.toString());
 
       const res = await axiosInstance.get(`/tour?${params.toString()}`);
-      setTours(res.data.data?.data || []);
-      setTotalTours(res.data.data?.meta?.total || 0);
-    } catch {
+
+      console.log("API Response:", res.data); // 🔍 debug
+
+      const responseData = res.data.data;
+      setTours(responseData.data || []);
+
+      // ✅ Your QueryBuilder returns totalDocs not total
+      setTotalTours(
+        responseData.meta?.totalDocs || // ✅ from QueryBuilder
+          responseData.meta?.total || // fallback
+          0,
+      );
+    } catch (err) {
+      console.error("Tours fetch error:", err);
       setTours([]);
     } finally {
       setIsLoading(false);
