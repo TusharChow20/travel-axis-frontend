@@ -13,32 +13,14 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // ✅ Get current user from backend using the cookie
+        // Cookie is httpOnly — just call /user/me, the browser sends it automatically
         const res = await axiosInstance.get("/user/me");
-        const user = res.data.data;
+        const userData = res.data.data?.data ?? res.data.data;
 
-        // ✅ Get tokens from cookies
-        const getCookie = (name: string) => {
-          const value = `; ${document.cookie}`;
-          const parts = value.split(`; ${name}=`);
-          if (parts.length === 2) return parts.pop()?.split(";").shift();
-          return null;
-        };
+        if (userData) {
+          dispatch(setCredentials({ user: userData }));
 
-        const accessToken = getCookie("accessToken");
-        const refreshToken = getCookie("refreshToken");
-
-        if (accessToken && user) {
-          dispatch(
-            setCredentials({
-              user,
-              accessToken,
-              refreshToken: refreshToken || "",
-            }),
-          );
-
-          // ✅ Redirect based on role
-          if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+          if (userData.role === "ADMIN" || userData.role === "SUPER_ADMIN") {
             router.push("/admin");
           } else {
             router.push("/");

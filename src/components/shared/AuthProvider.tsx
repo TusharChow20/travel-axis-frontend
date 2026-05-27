@@ -53,7 +53,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       axiosInstance
         .get("/user/me")
         .then((res) => {
-          dispatch(setCredentials({ user: res.data.data.data }));
+          const userData = res.data.data?.data ?? res.data.data;
+          dispatch(setCredentials({ user: userData }));
         })
         .catch(() => {
           dispatch(logout());
