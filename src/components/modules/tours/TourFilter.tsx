@@ -30,9 +30,10 @@ interface TourFilterProps {
   onClear: () => void;
   activeFilterCount: number;
   onMobileClose?: () => void;
+  priceRange: { min: number; max: number };
 }
 
-type SectionKey = "division" | "tourType" | "price";
+type SectionKey = "division" | "tourType" | "price" | null;
 
 export const TourFilter = ({
   filters,
@@ -41,14 +42,14 @@ export const TourFilter = ({
   onClear,
   activeFilterCount,
   onMobileClose,
+  priceRange,
 }: TourFilterProps) => {
-  // ✅ Only one section open at a time
+  // ✅ Single state controls which section is open — null means all closed
   const [openSection, setOpenSection] = useState<SectionKey>("division");
 
   const toggle = (key: SectionKey) => {
-    setOpenSection((prev) => (prev === key ? key : key));
-    // Always open the clicked one, close others
-    setOpenSection(key);
+    // clicking the already-open section closes it; clicking another opens it
+    setOpenSection((prev) => (prev === key ? null : key));
   };
 
   const handleFilter = (newFilter: Partial<IFilters>) => {
@@ -62,19 +63,22 @@ export const TourFilter = ({
   }: {
     title: string;
     sectionKey: SectionKey;
-  }) => (
-    <button
-      onClick={() => toggle(sectionKey)}
-      className="w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-muted transition-colors"
-    >
-      <span className="text-sm font-semibold text-foreground">{title}</span>
-      {openSection === sectionKey ? (
-        <ChevronUp className="h-4 w-4 text-muted-foreground" />
-      ) : (
-        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-      )}
-    </button>
-  );
+  }) => {
+    const isOpen = openSection === sectionKey;
+    return (
+      <button
+        onClick={() => toggle(sectionKey)}
+        className="w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-muted transition-colors"
+      >
+        <span className="text-sm font-semibold text-foreground">{title}</span>
+        {isOpen ? (
+          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        )}
+      </button>
+    );
+  };
 
   return (
     <div className="sticky top-20 space-y-3">
@@ -94,11 +98,11 @@ export const TourFilter = ({
         )}
       </div>
 
-      {/* Division */}
+      {/* ── Division ─────────────────────────────────────── */}
       <div className="border border-border rounded-xl overflow-hidden">
         <SectionHeader title="Division" sectionKey="division" />
         {openSection === "division" && (
-          <div className="px-4 pb-4 pt-2 bg-card space-y-1">
+          <div className="px-4 pb-4 pt-2 bg-card space-y-1 max-h-60 overflow-y-auto">
             <button
               onClick={() => handleFilter({ division: "" })}
               className={cn(
@@ -128,7 +132,7 @@ export const TourFilter = ({
         )}
       </div>
 
-      {/* Tour Type */}
+      {/* ── Tour Type ────────────────────────────────────── */}
       <div className="border border-border rounded-xl overflow-hidden">
         <SectionHeader title="Tour Type" sectionKey="tourType" />
         {openSection === "tourType" && (
@@ -162,11 +166,11 @@ export const TourFilter = ({
         )}
       </div>
 
-      {/* Price Range */}
+      {/* ── Price Range ──────────────────────────────────── */}
       <div className="border border-border rounded-xl overflow-hidden">
         <SectionHeader title="Price Range" sectionKey="price" />
         {openSection === "price" && (
-          <div className="px-4 pb-4 pt-2 bg-card">
+          <div className="px-4 pb-4 pt-4 bg-card">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded-md">
                 ৳{filters.minPrice.toLocaleString()}
@@ -176,8 +180,8 @@ export const TourFilter = ({
               </span>
             </div>
             <Slider
-              min={0}
-              max={50000}
+              min={priceRange.min}
+              max={priceRange.max}
               step={500}
               value={[filters.minPrice, filters.maxPrice]}
               onValueChange={([min, max]) =>
@@ -186,8 +190,12 @@ export const TourFilter = ({
               className="w-full"
             />
             <div className="flex items-center justify-between mt-2">
-              <span className="text-xs text-muted-foreground">৳0</span>
-              <span className="text-xs text-muted-foreground">৳50,000</span>
+              <span className="text-xs text-muted-foreground">
+                ৳{priceRange.min.toLocaleString()}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                ৳{priceRange.max.toLocaleString()}
+              </span>
             </div>
           </div>
         )}

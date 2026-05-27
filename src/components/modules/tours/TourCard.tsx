@@ -15,6 +15,40 @@ interface ITour {
   location: string;
 }
 
+const fallbackImages: Record<string, string> = {
+  Beach:
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+  Adventure:
+    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80",
+  Trekking:
+    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
+  Nature:
+    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&q=80",
+  Cultural:
+    "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=80",
+  Historical:
+    "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=80",
+  Wildlife:
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+  Sylhet:
+    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&q=80",
+  Chittagong:
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+  Khulna:
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+  Rangamati:
+    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
+  default:
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",
+};
+
+const getFallbackImage = (tourType?: string, divisionName?: string): string => {
+  if (tourType && fallbackImages[tourType]) return fallbackImages[tourType];
+  if (divisionName && fallbackImages[divisionName])
+    return fallbackImages[divisionName];
+  return fallbackImages.default;
+};
+
 export const TourCard = ({ tour }: { tour: ITour }) => {
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
@@ -23,7 +57,7 @@ export const TourCard = ({ tour }: { tour: ITour }) => {
         <img
           src={
             tour.images?.[0] ||
-            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400"
+            getFallbackImage(tour.tourType, tour.division?.name)
           }
           alt={tour.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

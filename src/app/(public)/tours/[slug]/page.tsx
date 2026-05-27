@@ -45,6 +45,25 @@ interface ITour {
   arrivalLocation?: string;
 }
 
+const fallbackImages: Record<string, string> = {
+  Beach:
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+  Adventure:
+    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+  Trekking:
+    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+  Nature:
+    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",
+  Cultural:
+    "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&q=80",
+  Historical:
+    "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&q=80",
+  Wildlife:
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+  default:
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=800&q=80",
+};
+
 export default function TourDetailsPage() {
   const { slug } = useParams();
   const router = useRouter();
@@ -80,7 +99,7 @@ export default function TourDetailsPage() {
 
   const images = tour.images?.length
     ? tour.images
-    : ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800"];
+    : [fallbackImages[tour.tourType ?? ""] ?? fallbackImages.default];
 
   const tabs = [
     { id: "overview", label: "Overview" },

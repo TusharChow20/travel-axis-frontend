@@ -50,15 +50,29 @@ export default function ToursPage() {
   const [page, setPage] = useState(1);
   const limit = 6;
 
-  // ✅ Fetch divisions for filter
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
+
   useEffect(() => {
-    const fetchDivisions = async () => {
+    const fetchMeta = async () => {
       try {
-        const res = await axiosInstance.get("/division");
-        setDivisions(res.data.data || []);
+        const [divRes, priceRes] = await Promise.all([
+          axiosInstance.get("/division"),
+          axiosInstance.get("/tour/price-range"),
+        ]);
+        setDivisions(divRes.data.data || []);
+
+        const { min, max } = priceRes.data.data;
+        setPriceRange({ min, max });
+
+        // ✅ Set filter defaults to actual DB range
+        setFilters((prev) => ({
+          ...prev,
+          minPrice: min,
+          maxPrice: max,
+        }));
       } catch {}
     };
-    fetchDivisions();
+    fetchMeta();
   }, []);
 
   const fetchTours = useCallback(async () => {
@@ -106,7 +120,11 @@ export default function ToursPage() {
   };
 
   const clearFilters = () => {
-    setFilters(initialFilters);
+    setFilters({
+      ...initialFilters,
+      minPrice: priceRange.min,
+      maxPrice: priceRange.max,
+    });
     setPage(1);
   };
 
@@ -162,6 +180,7 @@ export default function ToursPage() {
               onFilterChange={handleFilterChange}
               onClear={clearFilters}
               activeFilterCount={activeFilterCount}
+              priceRange={priceRange}
             />
           </div>
 
@@ -190,7 +209,8 @@ export default function ToursPage() {
                     onFilterChange={handleFilterChange}
                     onClear={clearFilters}
                     activeFilterCount={activeFilterCount}
-                    onMobileClose={() => setShowMobileFilter(false)} // ✅ auto close on mobile
+                    onMobileClose={() => setShowMobileFilter(false)}
+                    priceRange={priceRange}
                   />
                 </div>
               </div>
