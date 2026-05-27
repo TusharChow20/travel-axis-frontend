@@ -1,117 +1,151 @@
 "use client";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { selectUser, updateUser } from "@/redux/features/auth/authSlice";
+import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
+import { Loader2, MapPin, Users, Calendar, ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Save } from "lucide-react";
+import Link from "next/link";
 
-const profileSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-});
-
-type ProfileForm = z.infer<typeof profileSchema>;
-
-export default function ProfilePage() {
-  const user = useAppSelector(selectUser);
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-
-  const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      name: user?.name || "",
-      phone: user?.phone || "",
-      address: user?.address || "",
-    },
-  });
-
-  const onSubmit = async (data: ProfileForm) => {
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
-    try {
-      const res = await axiosInstance.patch(`/user/${user?._id}`, data);
-      dispatch(updateUser(res.data.data));
-      setSuccess("Profile updated successfully!");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update profile");
-    } finally {
-      setIsLoading(false);
-    }
+interface IBooking {
+  _id: string;
+  status: "PENDING" | "COMPLETE" | "CANCEL" | "FAILED";
+  peopleCount: number;
+  createdAt: string;
+  tour: {
+    _id: string;
+    title: string;
+    images: string[];
+    costFrom: number;
   };
+  payment: {
+    amount: number;
+    status: string;
+    transactionId: string;
+  };
+}
+
+const statusColors: Record<string, string> = {
+  COMPLETE: "bg-green-500/10 text-green-500 border-green-500/20",
+  PENDING: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+  CANCEL: "bg-red-500/10 text-red-500 border-red-500/20",
+  FAILED: "bg-red-500/10 text-red-500 border-red-500/20",
+};
+
+export default function UserBookingsPage() {
+  const [bookings, setBookings] = useState<IBooking[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    axiosInstance
+      .get("/booking/my-bookings")
+      .then((res) => setBookings(res.data.data || []))
+      .catch(() => setBookings([]))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Manage your personal information
+        <h1 className="text-2xl font-bold text-foreground">My Bookings</h1>
+        <p className="text-muted-foreground mt-1">
+          View and manage your tour bookings
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Personal Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {success && (
-            <div className="bg-primary/10 text-primary text-sm p-3 rounded-md mb-4">
-              ✅ {success}
-            </div>
-          )}
-          {error && (
-            <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md mb-4">
-              {error}
-            </div>
-          )}
+      {bookings.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center border border-border rounded-2xl bg-card">
+          <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="font-semibold text-foreground mb-1">
+            No bookings yet
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            You haven't booked any tours yet.
+          </p>
+          <Button asChild>
+            <Link href="/tours">Explore Tours</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {bookings.map((booking) => (
+            <div
+              key={booking._id}
+              className="flex flex-col sm:flex-row gap-4 p-5 rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors"
+            >
+              {/* Tour Image */}
+              <div className="w-full sm:w-32 h-24 rounded-xl overflow-hidden shrink-0 bg-muted">
+                {booking.tour?.images?.[0] ? (
+                  <img
+                    src={booking.tour.images[0]}
+                    alt={booking.tour.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                    No image
+                  </div>
+                )}
+              </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Read-only email */}
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input value={user?.email || ""} disabled className="opacity-60" />
-              <p className="text-xs text-muted-foreground">Email cannot be changed</p>
-            </div>
+              {/* Details */}
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
+                  <h3 className="font-semibold text-foreground truncate">
+                    {booking.tour?.title || "Tour"}
+                  </h3>
+                  <Badge
+                    variant="outline"
+                    className={statusColors[booking.status]}
+                  >
+                    {booking.status}
+                  </Badge>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input id="name" placeholder="John Doe" {...register("name")} />
-              {errors.name && (
-                <p className="text-destructive text-xs">{errors.name.message}</p>
-              )}
-            </div>
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Users className="h-3.5 w-3.5" />
+                    {booking.peopleCount} person
+                    {booking.peopleCount > 1 ? "s" : ""}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3.5 w-3.5" />
+                    {new Date(booking.createdAt).toLocaleDateString("en-BD", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input id="phone" placeholder="+880 1700-000000" {...register("phone")} />
+                <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
+                  <div>
+                    <span className="text-xs text-muted-foreground">
+                      Total paid{" "}
+                    </span>
+                    <span className="font-bold text-primary text-lg">
+                      ৳{booking.payment?.amount?.toLocaleString() ?? "—"}
+                    </span>
+                  </div>
+                  <Button size="sm" variant="outline" asChild>
+                    <Link href={`/tours/${booking.tour?._id}`}>
+                      <ExternalLink className="h-3.5 w-3.5 mr-1" />
+                      View Tour
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
-              <Input id="address" placeholder="Dhaka, Bangladesh" {...register("address")} />
-            </div>
-
-            <Button type="submit" disabled={isLoading} className="gap-2">
-              {isLoading ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Saving...</>
-              ) : (
-                <><Save className="h-4 w-4" /> Save Changes</>
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
