@@ -64,7 +64,7 @@ export default function ToursPage() {
         const { min, max } = priceRes.data.data;
         setPriceRange({ min, max });
 
-        // ✅ Set filter defaults to actual DB range
+        //   Set filter defaults to actual DB range
         setFilters((prev) => ({
           ...prev,
           minPrice: min,
@@ -96,9 +96,9 @@ export default function ToursPage() {
       const responseData = res.data.data;
       setTours(responseData.data || []);
 
-      // ✅ Your QueryBuilder returns totalDocs not total
+      //   Your QueryBuilder returns totalDocs not total
       setTotalTours(
-        responseData.meta?.totalDocs || // ✅ from QueryBuilder
+        responseData.meta?.totalDocs || //   from QueryBuilder
           responseData.meta?.total || // fallback
           0,
       );

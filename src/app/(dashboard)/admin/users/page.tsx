@@ -48,13 +48,16 @@ interface IUser {
 
 const roleColors: Record<string, string> = {
   USER: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  GUIDE: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  ADMIN: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  GUIDE:
+    "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+  ADMIN:
+    "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
   SUPER_ADMIN: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
 const statusColors: Record<string, string> = {
-  ACTIVE: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  ACTIVE:
+    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   INACTIVE: "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400",
   BLOCKED: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
@@ -80,7 +83,9 @@ export default function AdminUsersPage() {
       if (search) params.append("searchTerm", search);
       params.append("page", page.toString());
       params.append("limit", limit.toString());
-      const res = await axiosInstance.get(`/user/all-users?${params.toString()}`);
+      const res = await axiosInstance.get(
+        `/user/all-users?${params.toString()}`,
+      );
       setUsers(res.data.data?.users || res.data.data || []);
       const meta = res.data.data?.meta;
       setTotalPages(Math.ceil((meta?.total || 0) / limit) || 1);
@@ -95,8 +100,11 @@ export default function AdminUsersPage() {
     fetchUsers();
   }, [search, page]);
 
-  // ✅ Update user (role, status)
-  const handleUpdate = async (userId: string, payload: Record<string, string>) => {
+  //   Update user (role, status)
+  const handleUpdate = async (
+    userId: string,
+    payload: Record<string, string>,
+  ) => {
     setIsUpdating(userId);
     try {
       await axiosInstance.patch(`/user/${userId}`, payload);
@@ -109,7 +117,7 @@ export default function AdminUsersPage() {
     }
   };
 
-  // ✅ Delete user
+  //   Delete user
   const handleDelete = async () => {
     if (!deleteId) return;
     setIsDeleting(true);
@@ -151,7 +159,10 @@ export default function AdminUsersPage() {
           placeholder="Search users..."
           className="pl-9"
           value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
         />
       </div>
 
@@ -171,12 +182,24 @@ export default function AdminUsersPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">User</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">Role</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">Status</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">Verified</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">Joined</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">Actions</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">
+                    User
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">
+                    Role
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">
+                    Status
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">
+                    Verified
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">
+                    Joined
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground uppercase">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -207,35 +230,45 @@ export default function AdminUsersPage() {
                           <p className="text-sm font-medium text-foreground">
                             {user.name}
                             {user._id === currentUser?._id && (
-                              <span className="ml-2 text-xs text-muted-foreground">(You)</span>
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                (You)
+                              </span>
                             )}
                           </p>
-                          <p className="text-xs text-muted-foreground">{user.email}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
                         </div>
                       </div>
                     </td>
 
                     {/* Role */}
                     <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${roleColors[user.role]}`}>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${roleColors[user.role]}`}
+                      >
                         {user.role}
                       </span>
                     </td>
 
                     {/* Status */}
                     <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusColors[user.isActive]}`}>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${statusColors[user.isActive]}`}
+                      >
                         {user.isActive}
                       </span>
                     </td>
 
                     {/* Verified */}
                     <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                        user.isVerified
-                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                      }`}>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          user.isVerified
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                            : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                        }`}
+                      >
                         {user.isVerified ? "Verified" : "Unverified"}
                       </span>
                     </td>
@@ -244,7 +277,9 @@ export default function AdminUsersPage() {
                     <td className="px-4 py-3">
                       <span className="text-xs text-muted-foreground">
                         {new Date(user.createdAt).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "short", year: "numeric"
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
                         })}
                       </span>
                     </td>
@@ -268,21 +303,34 @@ export default function AdminUsersPage() {
                                 }`}
                                 onClick={() =>
                                   handleUpdate(user._id, {
-                                    isActive: user.isActive === "BLOCKED" ? "ACTIVE" : "BLOCKED",
+                                    isActive:
+                                      user.isActive === "BLOCKED"
+                                        ? "ACTIVE"
+                                        : "BLOCKED",
                                   })
                                 }
                               >
                                 {user.isActive === "BLOCKED" ? (
-                                  <><Shield className="h-3 w-3" />Unblock</>
+                                  <>
+                                    <Shield className="h-3 w-3" />
+                                    Unblock
+                                  </>
                                 ) : (
-                                  <><ShieldOff className="h-3 w-3" />Block</>
+                                  <>
+                                    <ShieldOff className="h-3 w-3" />
+                                    Block
+                                  </>
                                 )}
                               </Button>
 
                               {/* Change Role */}
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 gap-1 text-xs"
+                                  >
                                     Role
                                     <ChevronDown className="h-3 w-3" />
                                   </Button>
@@ -293,7 +341,9 @@ export default function AdminUsersPage() {
                                     .map((role) => (
                                       <DropdownMenuItem
                                         key={role}
-                                        onClick={() => handleUpdate(user._id, { role })}
+                                        onClick={() =>
+                                          handleUpdate(user._id, { role })
+                                        }
                                       >
                                         Set as {role}
                                       </DropdownMenuItem>
@@ -313,7 +363,9 @@ export default function AdminUsersPage() {
                         </div>
                       ) : (
                         <div className="flex justify-end">
-                          <span className="text-xs text-muted-foreground px-2">—</span>
+                          <span className="text-xs text-muted-foreground px-2">
+                            —
+                          </span>
                         </div>
                       )}
                     </td>
@@ -376,8 +428,13 @@ export default function AdminUsersPage() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isDeleting ? (
-                <><Loader2 className="h-4 w-4 animate-spin mr-2" />Deleting...</>
-              ) : "Delete"}
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

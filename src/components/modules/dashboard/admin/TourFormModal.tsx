@@ -75,7 +75,7 @@ export const TourFormModal = ({ open, onClose, onSuccess, tour }: Props) => {
     formState: { errors },
   } = useForm<TourForm>({ resolver: zodResolver(tourSchema) });
 
-  // ✅ Load divisions and durations
+  //   Load divisions and durations
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -90,7 +90,7 @@ export const TourFormModal = ({ open, onClose, onSuccess, tour }: Props) => {
     if (open) fetchData();
   }, [open]);
 
-  // ✅ Populate form on edit
+  //   Populate form on edit
   useEffect(() => {
     if (tour && open) {
       reset({
@@ -124,7 +124,7 @@ export const TourFormModal = ({ open, onClose, onSuccess, tour }: Props) => {
     }
   }, [tour, open, reset]);
 
-  // ✅ Handle image selection
+  //   Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setImages(files);
@@ -132,7 +132,7 @@ export const TourFormModal = ({ open, onClose, onSuccess, tour }: Props) => {
     setImagesPreviews(previews);
   };
 
-  // ✅ Dynamic array field helpers
+  //   Dynamic array field helpers
   const updateArrayField = (
     arr: string[],
     setArr: (v: string[]) => void,
@@ -161,7 +161,7 @@ export const TourFormModal = ({ open, onClose, onSuccess, tour }: Props) => {
     try {
       const formData = new FormData();
 
-      // ✅ Clean arrays
+      //   Clean arrays
       const cleanArr = (arr: string[]) => arr.filter((s) => s.trim() !== "");
 
       const payload = {

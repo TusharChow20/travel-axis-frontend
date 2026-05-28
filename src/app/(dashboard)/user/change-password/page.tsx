@@ -112,7 +112,7 @@ export default function ChangePasswordPage() {
         <CardContent>
           {success && (
             <div className="bg-primary/10 text-primary text-sm p-3 rounded-md mb-4">
-              ✅ {success}
+              {success}
             </div>
           )}
           {error && (

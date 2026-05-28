@@ -106,7 +106,7 @@ export default function LoginPage() {
             {error && (
               <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
                 <p>{error}</p>
-                {/* ✅ Show verify button if email not verified */}
+                {/*Show verify button if email not verified */}
                 {unverifiedEmail && (
                   <Button
                     variant="outline"

@@ -1,4 +1,3 @@
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
@@ -26,7 +25,7 @@ interface IAuthState {
 
 const initialState: IAuthState = {
   user: null,
-  isLoading: true, // ✅ start as true until we check auth
+  isLoading: true, //   start as true until we check auth
   isAuthenticated: false,
 };
 
@@ -56,7 +55,7 @@ const authSlice = createSlice({
       state.isLoading = action.payload;
     },
 
-    // ✅ Called when /user/me fails — user is not logged in
+    //   Called when /user/me fails — user is not logged in
     setUnauthenticated: (state) => {
       state.user = null;
       state.isAuthenticated = false;

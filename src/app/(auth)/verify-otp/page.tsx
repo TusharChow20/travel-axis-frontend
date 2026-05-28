@@ -26,7 +26,7 @@ function VerifyOtpContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
 
-  // ✅ Countdown timer for resend
+  //   Countdown timer for resend
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -36,7 +36,7 @@ function VerifyOtpContent() {
     }
   }, [countdown]);
 
-  // ✅ Handle input change
+  //   Handle input change
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return; // only digits
 
@@ -50,14 +50,14 @@ function VerifyOtpContent() {
     }
   };
 
-  // ✅ Handle backspace
+  //   Handle backspace
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  // ✅ Handle paste
+  //   Handle paste
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pasted = e.clipboardData
@@ -74,7 +74,7 @@ function VerifyOtpContent() {
     inputRefs.current[lastIndex]?.focus();
   };
 
-  // ✅ Verify OTP
+  //   Verify OTP
   const handleVerify = async () => {
     const otpString = otp.join("");
     if (otpString.length !== 6) {
@@ -94,7 +94,7 @@ function VerifyOtpContent() {
       router.push("/login?verified=true");
     } catch (err: any) {
       setError(err.response?.data?.message || "Invalid OTP. Please try again.");
-      // ✅ Clear OTP on error
+      //   Clear OTP on error
       setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0]?.focus();
     } finally {
@@ -102,7 +102,7 @@ function VerifyOtpContent() {
     }
   };
 
-  // ✅ Resend OTP
+  //   Resend OTP
   const handleResend = async () => {
     setIsResending(true);
     setError("");

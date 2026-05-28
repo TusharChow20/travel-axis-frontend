@@ -44,7 +44,7 @@ export const TourFilter = ({
   onMobileClose,
   priceRange,
 }: TourFilterProps) => {
-  // ✅ Single state controls which section is open — null means all closed
+  //   Single state controls which section is open — null means all closed
   const [openSection, setOpenSection] = useState<SectionKey>("division");
 
   const toggle = (key: SectionKey) => {

@@ -14,12 +14,10 @@ import {
   Compass,
 } from "lucide-react";
 
-// ── HERO SLIDES ─────────────────────────────────────────────────
-// Replace these URLs with your imgbb links when ready
 const heroSlides = [
   {
     image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80",
+      "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=900&q=80",
     eyebrow: "Khulna Division",
     headline: ["EXPLORE THE", "WILD HEART"],
     accent: "OF BANGLADESH.",
@@ -49,7 +47,6 @@ const heroSlides = [
   },
 ];
 
-// ── FLOATING DECORATION CONFIG ──────────────────────────────────
 const floatingDots = [
   { size: 18, top: "14%", left: "8%", delay: "0s", duration: "4s" },
   { size: 10, top: "22%", left: "52%", delay: "1.2s", duration: "5s" },
@@ -57,13 +54,6 @@ const floatingDots = [
   { size: 22, top: "78%", left: "55%", delay: "2s", duration: "4.5s" },
   { size: 8, top: "40%", right: "5%", delay: "0.3s", duration: "6s" },
   { size: 12, top: "88%", right: "8%", delay: "1.8s", duration: "4s" },
-];
-
-const stats = [
-  { value: "8+", label: "Divisions Covered" },
-  { value: "500+", label: "Happy Travelers" },
-  { value: "50+", label: "Curated Tours" },
-  { value: "4.9", label: "Average Rating" },
 ];
 
 const reasons = [
@@ -99,7 +89,7 @@ const destinations = [
   { name: "Sajek", division: "Chittagong", emoji: "☁️" },
   { name: "Kuakata", division: "Barisal", emoji: "🌅" },
 ];
-// ── IMAGE PRELOADER HOOK ─────────────────────────────────────────
+
 function useImagePreloader(urls: string[]) {
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   useEffect(() => {
@@ -171,39 +161,10 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
-      {/* ════════════════════════════════════════════════════════
-          HERO — dark mode: near-black bg  |  light mode: green-tint
-      ════════════════════════════════════════════════════════ */}
-      <section
-        className="relative min-h-screen pt-5 overflow-hidden flex items-center
-                   dark:bg-[#0a0a0a] bg-[#f0faf3]"
-      >
-        {/* ── Background ring decoration ───────────────────── */}
+      {/* ══ HERO ══════════════════════════════════════════════ */}
+      <section className="relative min-h-screen pt-16 overflow-hidden flex items-center dark:bg-[#0a0a0a] bg-[#f0faf3]">
+        {/* Floating dots only — no rings here */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-          {/* Large outer ring */}
-          <div
-            className="absolute rounded-full border dark:border-white/5 border-primary/10"
-            style={{
-              width: 700,
-              height: 700,
-              top: "50%",
-              left: "28%",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-          {/* Mid ring */}
-          <div
-            className="absolute rounded-full border dark:border-white/5 border-primary/10"
-            style={{
-              width: 520,
-              height: 520,
-              top: "50%",
-              left: "28%",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-
-          {/* Floating dots */}
           {floatingDots.map((d, i) => (
             <div
               key={i}
@@ -221,32 +182,33 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* ── Main two-column layout ────────────────────────── */}
-        <div
-          className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full
-                        grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16"
-        >
-          {/* LEFT — circular photo frame */}
+        {/* Two-column grid */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16">
+          {/* LEFT — photo frame */}
           <div className="relative flex items-center justify-center order-2 lg:order-1">
-            {/* Outer decorative circle */}
+            {/* Rings centered via flex parent */}
+            <div
+              className="absolute rounded-full border dark:border-white/5 border-primary/10"
+              style={{ width: 480, height: 480 }}
+            />
+            <div
+              className="absolute rounded-full border dark:border-white/5 border-primary/10"
+              style={{ width: 360, height: 360 }}
+            />
+            {/* Decorative ring just outside photo */}
             <div
               className="absolute rounded-full dark:border-white/8 border-primary/20 border-2"
-              style={{ width: "min(500px, 85vw)", height: "min(500px, 85vw)" }}
+              style={{ width: "min(420px, 56vw)", height: "min(420px, 56vw)" }}
             />
 
             {/* Photo circle */}
             <div
-              className="relative rounded-full overflow-hidden
-                         ring-4 dark:ring-white/10 ring-primary/20
-                         shadow-2xl dark:shadow-black/60 shadow-primary/20"
-              style={{ width: "min(420px, 72vw)", height: "min(420px, 72vw)" }}
+              className="relative rounded-full overflow-hidden ring-4 dark:ring-white/10 ring-primary/20 shadow-2xl dark:shadow-black/60 shadow-primary/20"
+              style={{ width: "min(360px, 48vw)", height: "min(360px, 48vw)" }}
             >
-              {/* Skeleton while loading */}
               {!preloaded[slide.image] && (
                 <div className="absolute inset-0 dark:bg-neutral-800 bg-primary/10 animate-pulse" />
               )}
-
-              {/* Photo — cross-fade on slide change */}
               <img
                 key={slide.image}
                 src={slide.image}
@@ -256,21 +218,15 @@ export default function HomePage() {
                   opacity: imgVisible && preloaded[slide.image] ? 1 : 0,
                 }}
               />
-
-              {/* Inner vignette */}
               <div
                 className="absolute inset-0 rounded-full"
                 style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.35)" }}
               />
             </div>
 
-            {/* Location badge — floats bottom-right of circle */}
+            {/* Location badge */}
             <div
-              className="absolute bottom-6 right-6 lg:right-0
-                         flex items-center gap-2 px-4 py-2 rounded-full
-                         dark:bg-white/10 bg-white/80
-                         dark:border-white/15 border-primary/20 border
-                         backdrop-blur-md shadow-lg"
+              className="absolute bottom-6 right-6 lg:right-0 flex items-center gap-2 px-4 py-2 rounded-full dark:bg-white/10 bg-white/80 dark:border-white/15 border-primary/20 border backdrop-blur-md shadow-lg"
               style={{
                 opacity: imgVisible ? 1 : 0,
                 transform: imgVisible ? "translateY(0)" : "translateY(8px)",
@@ -283,12 +239,8 @@ export default function HomePage() {
               </span>
             </div>
 
-            {/* Slide dots — below circle on mobile, left side on desktop */}
-            <div
-              className="absolute -bottom-8 lg:bottom-0 left-1/2 lg:left-0
-                            -translate-x-1/2 lg:translate-x-0
-                            flex lg:flex-col gap-2"
-            >
+            {/* Slide dots */}
+            <div className="absolute -bottom-8 lg:bottom-0 left-1/2 lg:left-0 -translate-x-1/2 lg:translate-x-0 flex lg:flex-col gap-2">
               {heroSlides.map((_, i) => (
                 <button
                   key={i}
@@ -303,7 +255,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* RIGHT — headline + CTA */}
+          {/* RIGHT — headline */}
           <div
             className="order-1 lg:order-2 transition-all duration-500"
             style={{
@@ -311,20 +263,13 @@ export default function HomePage() {
               transform: imgVisible ? "translateX(0)" : "translateX(20px)",
             }}
           >
-            {/* Eyebrow */}
-            <div
-              className="inline-flex items-center gap-2 mb-5
-                            dark:bg-white/8 bg-primary/10
-                            dark:border-white/12 border-primary/20
-                            border rounded-full px-4 py-1.5"
-            >
+            <div className="inline-flex items-center gap-2 mb-5 dark:bg-white/8 bg-primary/10 dark:border-white/12 border-primary/20 border rounded-full px-4 py-1.5">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               <span className="dark:text-white/70 text-primary/80 text-sm font-medium tracking-widest uppercase">
                 {slide.eyebrow}
               </span>
             </div>
 
-            {/* Big headline */}
             <h1
               className="font-black leading-none tracking-tight mb-3"
               style={{ fontSize: "clamp(2.8rem, 6vw, 5rem)" }}
@@ -337,12 +282,10 @@ export default function HomePage() {
               <span className="block text-primary">{slide.accent}</span>
             </h1>
 
-            {/* Sub text */}
             <p className="dark:text-white/55 text-gray-600 text-lg leading-relaxed mb-10 max-w-md">
               {slide.sub}
             </p>
 
-            {/* CTAs */}
             <div className="flex flex-wrap gap-4">
               <Button
                 size="lg"
@@ -358,15 +301,12 @@ export default function HomePage() {
                 size="lg"
                 variant="outline"
                 asChild
-                className="dark:border-white/20 dark:text-white dark:hover:bg-white/8
-                           border-primary/30 text-primary hover:bg-primary/8
-                           font-semibold px-8"
+                className="dark:border-white/20 dark:text-white dark:hover:bg-white/8 border-primary/30 text-primary hover:bg-primary/8 font-semibold px-8"
               >
                 <Link href="/tours">Browse All</Link>
               </Button>
             </div>
 
-            {/* Progress bar */}
             <div className="mt-10 flex items-center gap-4">
               <span className="dark:text-white/30 text-gray-400 text-sm tabular-nums">
                 0{current + 1}
@@ -385,7 +325,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* CSS animations */}
         <style>{`
           @keyframes floatY {
             from { transform: translateY(0px); }
@@ -397,11 +336,10 @@ export default function HomePage() {
           }
         `}</style>
       </section>
-      {/* ════════════════════════════════════════════════════════
-    DESTINATION MARQUEE CAROUSEL
-════════════════════════════════════════════════════════ */}
-      <section className="py-16 px-6 md:px-12 lg:px-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto mb-10">
+
+      {/* ══ DESTINATION MARQUEE ═══════════════════════════════ */}
+      <section className="py-16 overflow-hidden">
+        <div className="max-w-7xl mx-auto mb-10 px-6 md:px-12 lg:px-20">
           <div className="flex items-end justify-between">
             <div>
               <p className="text-primary text-sm font-medium tracking-widest uppercase mb-2">
@@ -423,41 +361,38 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Marquee track */}
-        <div className="relative">
-          {/* Left fade edge */}
+        {/* Marquee track — full width, seamless loop */}
+        <div className="relative overflow-hidden">
           <div
-            className="absolute left-0 top-0 h-full w-32 z-10 pointer-events-none"
+            className="absolute left-0 top-0 h-full w-24 z-10 pointer-events-none"
             style={{
               background:
                 "linear-gradient(to right, var(--background) 0%, transparent 100%)",
             }}
           />
-          {/* Right fade edge */}
           <div
-            className="absolute right-0 top-0 h-full w-32 z-10 pointer-events-none"
+            className="absolute right-0 top-0 h-full w-24 z-10 pointer-events-none"
             style={{
               background:
                 "linear-gradient(to left, var(--background) 0%, transparent 100%)",
             }}
           />
-
+          {/* Duplicate exactly twice for seamless -50% loop */}
           <div className="flex gap-5 w-max animate-marquee hover:[animation-play-state:paused]">
-            {[...destinations, ...destinations].map((dest, i) => (
+            {[
+              ...destinations,
+              ...destinations,
+              ...destinations,
+              ...destinations,
+              ...destinations,
+              ...destinations,
+            ].map((dest, i) => (
               <Link
                 key={i}
                 href={`/tours?searchTerm=${dest.name}`}
-                className="group flex flex-col items-center gap-3 px-7 py-6
-                     rounded-2xl border border-border bg-card
-                     hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10
-                     hover:-translate-y-2 transition-all duration-300
-                     w-40 shrink-0 cursor-pointer"
+                className="group flex flex-col items-center gap-3 px-7 py-6 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-300 w-40 shrink-0 cursor-pointer"
               >
-                {/* SVG placeholder icon per destination */}
-                <div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl
-                          bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300"
-                >
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300">
                   {dest.emoji}
                 </div>
                 <div className="text-center">
@@ -475,9 +410,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          FEATURED TOURS
-      ════════════════════════════════════════════════════════ */}
+      {/* ══ FEATURED TOURS ════════════════════════════════════ */}
       <section className="py-16 px-6 md:px-12 lg:px-20 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-10">
@@ -531,9 +464,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          WHY CHOOSE US
-      ════════════════════════════════════════════════════════ */}
+      {/* ══ WHY CHOOSE US ═════════════════════════════════════ */}
       <section className="py-20 px-6 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
@@ -553,14 +484,9 @@ export default function HomePage() {
             {reasons.map((r, i) => (
               <div
                 key={i}
-                className="group p-6 rounded-2xl border border-border bg-card
-                           hover:border-primary/50 hover:shadow-md transition-all duration-300"
+                className="group p-6 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all duration-300"
               >
-                <div
-                  className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center
-                                text-primary mb-5 group-hover:bg-primary group-hover:text-primary-foreground
-                                transition-all duration-300"
-                >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-5 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                   {r.icon}
                 </div>
                 <h3 className="font-bold text-foreground text-lg mb-2">
@@ -575,9 +501,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          TESTIMONIAL + CTA
-      ════════════════════════════════════════════════════════ */}
+      {/* ══ TESTIMONIAL + CTA ═════════════════════════════════ */}
       <section className="py-20 px-6 md:px-12 lg:px-20 bg-muted/30 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="relative rounded-3xl bg-card border border-border p-8 md:p-12 lg:p-16 overflow-hidden">

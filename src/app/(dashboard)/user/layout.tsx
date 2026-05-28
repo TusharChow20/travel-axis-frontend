@@ -18,7 +18,7 @@ export default function UserDashboardLayout({
 }) {
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const isLoading = useAppSelector(selectIsLoading); // ✅
+  const isLoading = useAppSelector(selectIsLoading); //
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,13 +28,13 @@ export default function UserDashboardLayout({
   }, [pathname]);
 
   useEffect(() => {
-    // ✅ Only redirect AFTER auth check is complete
+    //   Only redirect AFTER auth check is complete
     if (!isLoading && !isAuthenticated) {
       router.push("/login");
     }
   }, [isLoading, isAuthenticated, router]);
 
-  // ✅ Show loader while checking auth
+  //   Show loader while checking auth
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

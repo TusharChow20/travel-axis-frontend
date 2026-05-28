@@ -2,10 +2,20 @@
 import { useState, useEffect } from "react";
 
 export const useTheme = () => {
-  const [theme, setThemeState] = useState<"light" | "dark">("light");
+  const [theme, setThemeState] = useState<"light" | "dark">(() => {
+    // During SSR this won't run, but on client it reads the class
+    // the blocking script already applied — no flash
+    if (typeof window !== "undefined") {
+      return document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light";
+    }
+    return "dark"; // SSR fallback — matches your desired default
+  });
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as "light" | "dark";
+    // Sync in case nothing was saved yet
+    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
     const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";

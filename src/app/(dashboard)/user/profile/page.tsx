@@ -47,7 +47,7 @@ export default function ProfilePage() {
     try {
       const userId = user?._id?.toString();
 
-      // ✅ Remove empty string fields before sending
+      //   Remove empty string fields before sending
       const cleanData = Object.fromEntries(
         Object.entries(data).filter(
           ([_, v]) => v !== "" && v !== null && v !== undefined,
@@ -81,7 +81,7 @@ export default function ProfilePage() {
         <CardContent>
           {success && (
             <div className="bg-primary/10 text-primary text-sm p-3 rounded-md mb-4">
-              ✅ {success}
+              {success}
             </div>
           )}
           {error && (

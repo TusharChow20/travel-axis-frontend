@@ -18,7 +18,7 @@ export default function AdminLayout({
 }) {
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const isLoading = useAppSelector(selectIsLoading); // ✅ check loading state
+  const isLoading = useAppSelector(selectIsLoading); //   check loading state
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,7 +28,7 @@ export default function AdminLayout({
   }, [pathname]);
 
   useEffect(() => {
-    // ✅ Only redirect AFTER auth check is complete
+    //   Only redirect AFTER auth check is complete
     if (!isLoading) {
       if (!isAuthenticated) {
         router.push("/login");

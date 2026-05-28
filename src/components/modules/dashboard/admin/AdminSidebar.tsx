@@ -77,7 +77,7 @@ export const AdminSidebar = ({
             <Link
               key={item.href}
               href={item.href}
-              onClick={onNavClick} // ✅ close mobile sidebar on nav
+              onClick={onNavClick} //   close mobile sidebar on nav
               className={cn(
                 "flex items-center justify-between px-4 py-3 transition-colors",
                 index !== navItems.length - 1 && "border-b border-border",

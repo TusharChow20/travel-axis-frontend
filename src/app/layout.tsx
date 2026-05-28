@@ -17,13 +17,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('theme');var p=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if((s||p)==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
         <Providers>
-          <Navbar></Navbar>
+          <Navbar />
           {children}
-
           <Toaster richColors position="top-right" />
-          <Footer></Footer>
+          <Footer />
         </Providers>
       </body>
     </html>

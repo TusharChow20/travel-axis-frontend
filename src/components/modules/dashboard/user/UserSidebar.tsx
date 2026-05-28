@@ -23,7 +23,7 @@ const navItems = [
 
 export const UserSidebar = ({
   user,
-  onNavClick, // ✅ added
+  onNavClick, //   added
 }: {
   user: IUser;
   onNavClick?: () => void;
@@ -35,7 +35,7 @@ export const UserSidebar = ({
   const handleLogout = () => {
     dispatch(logout());
     router.push("/login");
-    onNavClick?.(); // ✅ close mobile sidebar
+    onNavClick?.(); //   close mobile sidebar
   };
 
   return (
@@ -70,7 +70,7 @@ export const UserSidebar = ({
             <Link
               key={item.href}
               href={item.href}
-              onClick={onNavClick} // ✅ close mobile sidebar on click
+              onClick={onNavClick} //   close mobile sidebar on click
               className={cn(
                 "flex items-center justify-between px-4 py-3 transition-colors",
                 index !== navItems.length - 1 && "border-b border-border",

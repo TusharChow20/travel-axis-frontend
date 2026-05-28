@@ -30,7 +30,7 @@ export const SearchWithSuggestions = ({ value, onChange, onSearch }: Props) => {
   const debounceRef = useRef<number | null>(null);
   const router = useRouter();
 
-  // ✅ Debounced fetch suggestions
+  //   Debounced fetch suggestions
   const fetchSuggestions = useCallback(async (query: string) => {
     if (query.length < 2) {
       setSuggestions([]);
@@ -52,7 +52,7 @@ export const SearchWithSuggestions = ({ value, onChange, onSearch }: Props) => {
     }
   }, []);
 
-  // ✅ Debounce input — wait 300ms after typing stops
+  //   Debounce input — wait 300ms after typing stops
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -68,7 +68,7 @@ export const SearchWithSuggestions = ({ value, onChange, onSearch }: Props) => {
     };
   }, [value, fetchSuggestions]);
 
-  // ✅ Close dropdown on outside click
+  //   Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -83,7 +83,7 @@ export const SearchWithSuggestions = ({ value, onChange, onSearch }: Props) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ✅ Keyboard navigation
+  //   Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown) return;
 
@@ -194,7 +194,7 @@ export const SearchWithSuggestions = ({ value, onChange, onSearch }: Props) => {
               </div>
 
               <div className="flex-1 min-w-0">
-                {/* ✅ Highlight matching text */}
+                {/*   Highlight matching text */}
                 <p className="text-sm font-medium truncate">
                   {suggestion.title}
                 </p>
