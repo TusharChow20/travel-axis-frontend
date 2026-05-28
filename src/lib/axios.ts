@@ -1,29 +1,3 @@
-// import axios from "axios";
-
-// const axiosInstance = axios.create({
-//   baseURL: process.env.NEXT_PUBLIC_API_URL,
-//   withCredentials: true,
-// });
-
-// // Attach token to every request
-// axiosInstance.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("accessToken");
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
-
-// export default axiosInstance;
-// import axios from "axios";
-
-// const axiosInstance = axios.create({
-//   baseURL: process.env.NEXT_PUBLIC_API_URL,
-//   withCredentials: true,
-// });
-
-// export default axiosInstance;
-
 import axios from "axios";
 import { store } from "@/redux/store";
 import { logout } from "@/redux/features/auth/authSlice";
@@ -58,8 +32,7 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url.includes("/auth/refresh-token") &&
-      !originalRequest.url.includes("/user/me")
+      !originalRequest.url.includes("/auth/refresh-token") // ← ONLY exclude the refresh endpoint itself
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -79,7 +52,16 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError);
         store.dispatch(logout());
-        window.location.href = "/login";
+        // Only redirect to /login if NOT on a public page
+        const publicPaths = ["/", "/tours", "/about", "/contact"];
+        const isPublic =
+          publicPaths.some((p) => window.location.pathname.startsWith(p)) &&
+          !window.location.pathname.startsWith("/booking") &&
+          !window.location.pathname.startsWith("/admin") &&
+          !window.location.pathname.startsWith("/user");
+        if (!isPublic) {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

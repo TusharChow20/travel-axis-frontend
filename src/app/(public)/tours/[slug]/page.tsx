@@ -20,7 +20,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useAppSelector } from "@/redux/hooks";
-import { selectIsAuthenticated } from "@/redux/features/auth/authSlice";
+import {
+  selectIsAuthenticated,
+  selectIsLoading as selectAuthIsLoading,
+} from "@/redux/features/auth/authSlice";
 
 interface ITour {
   _id: string;
@@ -68,12 +71,17 @@ export default function TourDetailsPage() {
   const { slug } = useParams();
   const router = useRouter();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const authIsLoading = useAppSelector(selectAuthIsLoading); // ← wait for auth to resolve
+
   const [tour, setTour] = useState<ITour | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
+    // Don't fetch until auth state is known — prevents 401 redirect race
+    if (authIsLoading) return;
+
     const fetchTour = async () => {
       try {
         const res = await axiosInstance.get(`/tour/${slug}`);
@@ -84,10 +92,12 @@ export default function TourDetailsPage() {
         setIsLoading(false);
       }
     };
-    if (slug) fetchTour();
-  }, [slug, router]);
 
-  if (isLoading) {
+    if (slug) fetchTour();
+  }, [slug, router, authIsLoading]); // ← authIsLoading in deps
+
+  // Show spinner while either auth or tour is loading
+  if (authIsLoading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -136,15 +146,12 @@ export default function TourDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Left — Image Gallery */}
           <div className="space-y-3">
-            {/* Main Image */}
             <div className="relative h-80 sm:h-96 rounded-2xl overflow-hidden group">
               <img
                 src={images[activeImage]}
                 alt={tour.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-
-              {/* Navigation arrows */}
               {images.length > 1 && (
                 <>
                   <button
@@ -169,15 +176,11 @@ export default function TourDetailsPage() {
                   </button>
                 </>
               )}
-
-              {/* Image counter */}
               {images.length > 1 && (
                 <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
                   {activeImage + 1}/{images.length}
                 </div>
               )}
-
-              {/* Tour type badge */}
               {tour.tourType && (
                 <div className="absolute top-3 left-3">
                   <Badge className="bg-primary text-primary-foreground">
@@ -186,8 +189,6 @@ export default function TourDetailsPage() {
                 </div>
               )}
             </div>
-
-            {/* Thumbnail strip */}
             {images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {images.map((img, index) => (
@@ -213,7 +214,6 @@ export default function TourDetailsPage() {
 
           {/* Right — Details Card */}
           <div className="flex flex-col gap-4">
-            {/* Title & Rating */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                 {tour.division && (
@@ -245,7 +245,6 @@ export default function TourDetailsPage() {
               </div>
             </div>
 
-            {/* Quick Info */}
             <div className="grid grid-cols-2 gap-3">
               {tour.startDate && (
                 <div className="bg-muted/50 rounded-xl p-3 flex items-center gap-3">
@@ -264,7 +263,6 @@ export default function TourDetailsPage() {
                   </div>
                 </div>
               )}
-
               {tour.endDate && (
                 <div className="bg-muted/50 rounded-xl p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -282,7 +280,6 @@ export default function TourDetailsPage() {
                   </div>
                 </div>
               )}
-
               {tour.maxPeople && (
                 <div className="bg-muted/50 rounded-xl p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -296,7 +293,6 @@ export default function TourDetailsPage() {
                   </div>
                 </div>
               )}
-
               {tour.minAge && (
                 <div className="bg-muted/50 rounded-xl p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -308,7 +304,6 @@ export default function TourDetailsPage() {
                   </div>
                 </div>
               )}
-
               {tour.departureLocation && (
                 <div className="bg-muted/50 rounded-xl p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -322,7 +317,6 @@ export default function TourDetailsPage() {
                   </div>
                 </div>
               )}
-
               {tour.tourDuration && (
                 <div className="bg-muted/50 rounded-xl p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -338,7 +332,6 @@ export default function TourDetailsPage() {
               )}
             </div>
 
-            {/* Price + Book Now */}
             <div className="bg-card border border-border rounded-2xl p-5 mt-auto">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -357,11 +350,9 @@ export default function TourDetailsPage() {
                   </Badge>
                 </div>
               </div>
-
               <Button className="w-full" size="lg" onClick={handleBookNow}>
                 {isAuthenticated ? "Book Now" : "Login to Book"}
               </Button>
-
               {!isAuthenticated && (
                 <p className="text-xs text-muted-foreground text-center mt-2">
                   You need to be logged in to book this tour
@@ -373,7 +364,6 @@ export default function TourDetailsPage() {
 
         {/* Tabs Section */}
         <div className="border border-border rounded-2xl overflow-hidden">
-          {/* Tab Headers */}
           <div className="flex border-b border-border overflow-x-auto">
             {tabs.map((tab) => (
               <button
@@ -390,9 +380,7 @@ export default function TourDetailsPage() {
             ))}
           </div>
 
-          {/* Tab Content */}
           <div className="p-6">
-            {/* Overview */}
             {activeTab === "overview" && (
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">
@@ -404,10 +392,8 @@ export default function TourDetailsPage() {
               </div>
             )}
 
-            {/* Included / Excluded */}
             {activeTab === "included" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Included */}
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -430,8 +416,6 @@ export default function TourDetailsPage() {
                     </p>
                   )}
                 </div>
-
-                {/* Excluded */}
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
@@ -457,7 +441,6 @@ export default function TourDetailsPage() {
               </div>
             )}
 
-            {/* Tour Plan */}
             {activeTab === "tourplan" && (
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-6">
@@ -467,7 +450,6 @@ export default function TourDetailsPage() {
                   <div className="space-y-4">
                     {tour.tourPlan.map((plan, i) => (
                       <div key={i} className="flex gap-4">
-                        {/* Timeline dot */}
                         <div className="flex flex-col items-center">
                           <div className="w-8 h-8 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center shrink-0">
                             <span className="text-xs font-bold text-primary">
@@ -478,7 +460,6 @@ export default function TourDetailsPage() {
                             <div className="w-0.5 h-full bg-border mt-1" />
                           )}
                         </div>
-                        {/* Content */}
                         <div className="pb-4 flex-1">
                           <div className="bg-muted/50 rounded-xl p-4">
                             <p className="text-xs text-primary font-medium mb-1">
@@ -498,7 +479,6 @@ export default function TourDetailsPage() {
               </div>
             )}
 
-            {/* Amenities */}
             {activeTab === "amenities" && (
               <div>
                 <h3 className="text-lg font-semibold text-foreground mb-4">

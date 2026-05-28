@@ -33,6 +33,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [error, setError] = useState("");
+  const DEMO_EMAIL = "demo@travelaxis.com";
+  const DEMO_PASSWORD = "Demo@1234";
   const [unverifiedEmail, setUnverifiedEmail] = useState("");
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -41,6 +43,7 @@ export default function LoginPage() {
     register,
     handleSubmit,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -127,7 +130,31 @@ export default function LoginPage() {
                 )}
               </div>
             )}
-
+            {/* Demo Login */}
+            <div className="bg-muted/50 rounded-lg p-3 text-sm text-muted-foreground">
+              <p className="font-medium text-foreground mb-2">
+                🧪 Demo credentials
+              </p>
+              <p>
+                Email:{" "}
+                <span className="font-mono text-xs">demo@travelaxis.com</span>
+              </p>
+              <p>
+                Password: <span className="font-mono text-xs">Demo@1234</span>
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2 w-full"
+                onClick={() => {
+                  setValue("email", DEMO_EMAIL);
+                  setValue("password", DEMO_PASSWORD);
+                }}
+              >
+                Fill demo credentials
+              </Button>
+            </div>
             {/* Google */}
             <Button
               variant="outline"

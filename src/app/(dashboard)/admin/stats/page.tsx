@@ -283,7 +283,13 @@ export default function AdminStatsPage() {
               <LineChart data={revenueChartData}>
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => `৳${v.toLocaleString()}`} />
+                <Tooltip
+                  formatter={(v) =>
+                    typeof v === "number"
+                      ? `৳${v.toLocaleString()}`
+                      : String(v ?? "")
+                  }
+                />
                 <Line
                   type="monotone"
                   dataKey="revenue"
