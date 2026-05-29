@@ -1,15 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Moon,
-  Sun,
-  Menu,
-  X,
-  User,
-  LogOut,
-  LayoutDashboard,
-} from "lucide-react";
+import { Moon, Sun, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,6 +15,7 @@ import {
   logout,
   selectUser,
   selectIsAuthenticated,
+  selectIsLoading,
 } from "@/redux/features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/hooks/useTheme";
@@ -38,14 +31,15 @@ const navLinks = [
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [themeMounted, setThemeMounted] = useState(false); //  only for theme
+  const [themeMounted, setThemeMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const isLoading = useAppSelector(selectIsLoading);
   const router = useRouter();
 
-  useEffect(() => setThemeMounted(true), []); //  only for theme toggle
+  useEffect(() => setThemeMounted(true), []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -105,7 +99,7 @@ export const Navbar = () => {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Theme Toggle — only after mounted */}
+            {/* Theme Toggle */}
             {themeMounted && (
               <Button variant="ghost" size="icon" onClick={toggleTheme}>
                 {theme === "dark" ? (
@@ -116,8 +110,10 @@ export const Navbar = () => {
               </Button>
             )}
 
-            {/*  Auth — no mounted check needed since AuthProvider handles it */}
-            {isAuthenticated && user ? (
+            {/* Auth */}
+            {isLoading ? (
+              <div className="w-24 h-9 rounded-md bg-muted animate-pulse" />
+            ) : isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="flex items-center gap-2">
@@ -210,7 +206,9 @@ export const Navbar = () => {
               ))}
 
               <div className="flex flex-col gap-2 pt-2 border-t border-border">
-                {isAuthenticated && user ? (
+                {isLoading ? (
+                  <div className="w-full h-8 rounded-md bg-muted animate-pulse" />
+                ) : isAuthenticated && user ? (
                   <>
                     <Link
                       href={getDashboardLink()}

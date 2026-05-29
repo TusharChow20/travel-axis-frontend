@@ -1,9 +1,8 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import axiosInstance from "@/lib/axios";
 import { Loader2, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import { TourFilter } from "@/components/modules/tours/TourFilter";
@@ -49,8 +48,8 @@ export default function ToursPage() {
   const [totalTours, setTotalTours] = useState(0);
   const [page, setPage] = useState(1);
   const limit = 6;
-
   const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
+  const isInitialLoad = useRef(true);
 
   useEffect(() => {
     const fetchMeta = async () => {
@@ -64,7 +63,6 @@ export default function ToursPage() {
         const { min, max } = priceRes.data.data;
         setPriceRange({ min, max });
 
-        //   Set filter defaults to actual DB range
         setFilters((prev) => ({
           ...prev,
           minPrice: min,
@@ -91,22 +89,17 @@ export default function ToursPage() {
 
       const res = await axiosInstance.get(`/tour?${params.toString()}`);
 
-      console.log("API Response:", res.data); //
-
       const responseData = res.data.data;
       setTours(responseData.data || []);
-
-      //   Your QueryBuilder returns totalDocs not total
       setTotalTours(
-        responseData.meta?.totalDocs || //   from QueryBuilder
-          responseData.meta?.total || // fallback
-          0,
+        responseData.meta?.totalDocs || responseData.meta?.total || 0,
       );
     } catch (err) {
       console.error("Tours fetch error:", err);
       setTours([]);
     } finally {
       setIsLoading(false);
+      isInitialLoad.current = false;
     }
   }, [filters, page]);
 
@@ -135,6 +128,32 @@ export default function ToursPage() {
   ].filter(Boolean).length;
 
   const totalPages = Math.ceil(totalTours / limit);
+
+  // Show full skeleton on very first load
+  if (isInitialLoad.current && isLoading) {
+    return (
+      <div className="min-h-screen bg-background pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="h-8 w-48 bg-muted animate-pulse rounded mb-2" />
+          <div className="h-4 w-72 bg-muted animate-pulse rounded mb-6" />
+          <div className="h-10 w-full bg-muted animate-pulse rounded mb-6" />
+          <div className="flex gap-6">
+            <div className="hidden lg:block w-64 shrink-0">
+              <div className="h-96 bg-muted animate-pulse rounded-xl" />
+            </div>
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="h-80 bg-muted animate-pulse rounded-2xl"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pt-16">
@@ -238,8 +257,13 @@ export default function ToursPage() {
             </div>
 
             {isLoading ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div
+                    key={i}
+                    className="h-80 bg-muted animate-pulse rounded-2xl"
+                  />
+                ))}
               </div>
             ) : tours.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">

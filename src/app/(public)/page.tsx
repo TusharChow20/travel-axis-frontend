@@ -271,8 +271,8 @@ export default function HomePage() {
             </div>
 
             <h1
-              className="font-black leading-none tracking-tight mb-3"
-              style={{ fontSize: "clamp(2.8rem, 6vw, 5rem)" }}
+              className="font-black leading-none tracking-tight mb-3 min-h-[11rem]"
+              style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)" }}
             >
               {slide.headline.map((line, i) => (
                 <span key={i} className="block dark:text-white text-gray-900">
