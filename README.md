@@ -18,6 +18,7 @@ Admins get a separate dashboard to manage tours, users, bookings, and view platf
 ## Features
 
 **Auth**
+
 - Email/password login with OTP email verification
 - Google OAuth via Passport.js
 - JWT stored in httpOnly cookies (no localStorage)
@@ -25,18 +26,21 @@ Admins get a separate dashboard to manage tours, users, bookings, and view platf
 - Forgot password and reset password flow
 
 **Public**
+
 - Hero slider with animated transitions
 - Tour listing with search, filter by division/type/price range
 - Individual tour detail page with booking
 - About, Contact, FAQ, Privacy Policy, Terms, Cancellation, Payment Methods pages
 
 **User Dashboard**
+
 - View and manage bookings
 - Payment history with invoice download
 - Profile management
 - Change password
 
 **Admin Dashboard**
+
 - Manage tours (create, edit, delete with image upload)
 - Manage users and roles
 - View and manage all bookings
@@ -46,39 +50,41 @@ Admins get a separate dashboard to manage tours, users, bookings, and view platf
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| UI Library | React 19 |
-| State Management | Redux Toolkit |
-| Styling | Tailwind CSS v4, shadcn/ui |
-| Forms | React Hook Form + Zod |
-| HTTP Client | Axios (with interceptor for token refresh) |
-| Icons | Lucide React, React Icons |
-| Charts | Recharts |
-| Theme | next-themes (dark/light mode) |
+| Layer            | Technology                                 |
+| ---------------- | ------------------------------------------ |
+| Framework        | Next.js 16 (App Router)                    |
+| UI Library       | React 19                                   |
+| State Management | Redux Toolkit                              |
+| Styling          | Tailwind CSS v4, shadcn/ui                 |
+| Forms            | React Hook Form + Zod                      |
+| HTTP Client      | Axios (with interceptor for token refresh) |
+| Icons            | Lucide React, React Icons                  |
+| Charts           | Recharts                                   |
+| Theme            | next-themes (dark/light mode)              |
 
 ---
 
 ## Project Structure
+
 src/
 ├── app/
-│   ├── (auth)/          # login, register, otp, forgot/reset password
-│   ├── (dashboard)/     # admin and user dashboards
-│   └── (public)/        # home, tours, booking, static pages
+│ ├── (auth)/ # login, register, otp, forgot/reset password
+│ ├── (dashboard)/ # admin and user dashboards
+│ └── (public)/ # home, tours, booking, static pages
 ├── components/
-│   ├── modules/         # feature-specific components
-│   ├── shared/          # Navbar, Footer, AuthProvider, Providers
-│   └── ui/              # shadcn components
-├── redux/               # store, slices (auth, booking, tour)
-├── lib/                 # axios instance
-└── hooks/               # useTheme
+│ ├── modules/ # feature-specific components
+│ ├── shared/ # Navbar, Footer, AuthProvider, Providers
+│ └── ui/ # shadcn components
+├── redux/ # store, slices (auth, booking, tour)
+├── lib/ # axios instance
+└── hooks/ # useTheme
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - Backend running locally or deployed
 
@@ -95,7 +101,7 @@ npm install
 Create a `.env.local` file:
 
 ```env
-NEXT_PUBLIC_API_URL=https://backend-travel-axis.vercel.app/api/v1
+NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
 ```
 
 ### Run Locally
@@ -126,8 +132,8 @@ npm start
 
 ## Demo
 
-| Role | Email | Password |
-|---|---|---|
+| Role | Email               | Password  |
+| ---- | ------------------- | --------- |
 | User | demo@travelaxis.com | Demo@1234 |
 
 ---
@@ -140,6 +146,7 @@ npm start
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - Backend running locally or deployed
 
@@ -156,7 +163,7 @@ npm install
 Create a `.env.local` file:
 
 ```env
-NEXT_PUBLIC_API_URL=https://backend-travel-axis.vercel.app/api/v1
+NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
 ```
 
 ### Run Locally
@@ -187,8 +194,8 @@ npm start
 
 ## Demo
 
-| Role | Email | Password |
-|---|---|---|
+| Role | Email               | Password  |
+| ---- | ------------------- | --------- |
 | User | demo@travelaxis.com | Demo@1234 |
 
 ---
