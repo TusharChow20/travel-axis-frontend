@@ -51,6 +51,8 @@ export default function ToursPage() {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
   const isInitialLoad = useRef(true);
 
+  const [metaReady, setMetaReady] = useState(false);
+
   useEffect(() => {
     const fetchMeta = async () => {
       try {
@@ -68,7 +70,10 @@ export default function ToursPage() {
           minPrice: min,
           maxPrice: max,
         }));
-      } catch {}
+      } catch {
+      } finally {
+        setMetaReady(true);
+      }
     };
     fetchMeta();
   }, []);
@@ -104,8 +109,9 @@ export default function ToursPage() {
   }, [filters, page]);
 
   useEffect(() => {
+    if (!metaReady) return; 
     fetchTours();
-  }, [fetchTours]);
+  }, [fetchTours, metaReady]);
 
   const handleFilterChange = (newFilters: Partial<IFilters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
